@@ -22,8 +22,8 @@ app.use(session({
     cookie: { maxAge: 60000 * 20 }
 }));
 
-app.use( '', APIRouter );
+app.use( '/tasks', APIRouter );
 
 app.listen( process.env.PORT, function(){
-    console.log( "The users server is running in port 8181." );
+    console.log( "The users server is running in port 5000." );
 });

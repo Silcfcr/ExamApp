@@ -4,16 +4,14 @@ const APIRouter = express.Router();
 
 APIRouter
     .route( '/' )
-    .get( APIController.getAllUsers )
+    .get( APIController.getAll)
+    .post(APIController.addNewTask);
 APIRouter
-    .get('/:userName', APIController.getOneUser )
+    .get('/:id', APIController.getOneTask )
 APIRouter
-    .post( '/new/:userName', APIController.addNewUserAPI);
+    .delete( '/:id', APIController.deleteOne );
 
 APIRouter
-    .delete( '/remove/:userName', APIController.deleteUser );
-
-APIRouter
-    .put( '/users/update/:userName', APIController.updateUser );
+    .put( '/:id', APIController.updateTask );
 
 module.exports = { APIRouter };

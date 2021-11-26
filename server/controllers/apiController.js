@@ -1,40 +1,53 @@
-const {UserModel} = require( './../models/userModel' );
+const {TaskModel} = require( './../models/taskModel' );
 
 const APIController = {
-    getAllUsers : function( request, response ){
-        UserModel.getUsers()
-            .then( users => {
-                let userWithoutPassword = users.map( user => {
-                    // Map through comments here if you need to include comments too
-                    return {
-                        firstName : user.firstName,
-                        lastName : user.lastName,
-                        userName : user.userName
-                        //comments : user.comments
-                    }
-                } )
-                response.status( 200 ).json( userWithoutPassword );
+    getAll : function( request, response ){
+        TaskModel.getAll()
+            .then( tasks => {
+                response.status( 200 ).json( tasks );
             });
     },
-    getOneUser : function( request, response ){
-        let userName = request.params.userName;
-        UserModel.getUserById(userName)
+    getOneTask : function( request, response ){
+        let id = request.params.id;
+        console.log(id);
+        TaskModel.getOneById({ _id: id})
             .then( data => {
                 response.status( 200 ).json( data );
             });
     },
-    deleteUser : function( request, response ){
-        let userName = request.params.userName;
+    addNewTask : function( request, response ){
+        let { title, description, completed } = request.body;
 
-        UserModel
-            .getUserById( userName )
-            .then( user => {
-                if( user === null ){
-                    throw new Error( "That user doesn't exist" );
+        if( title && description){
+            let newTask = {
+                title,
+                description,
+                completed
+            };
+
+            TaskModel
+                .create( newTask )
+                .then( task => {
+                    response.status( 201 ).json( task );
+                });
+        }
+        else{
+            response.statusMessage = "You are missing a field to create a new task ('title', 'description', 'completed')";
+            response.status( 406 ).end();
+        }      
+    },
+    deleteOne : function( request, response ){
+        let id = request.params.id;
+
+        TaskModel
+            .getOneById( {_id : id} )
+            .then( task => {
+                if( task === null ){
+                    throw new Error( "That task doesn't exist" );
                 }
                 else{
-                    UserModel
-                        .deleteUserById( userName )
+                    TaskModel
+                        .deleteOne({ _id: id})
                         .then( result => {
                             console.log("I got here")
                             response.status( 204 ).end();
@@ -48,50 +61,38 @@ const APIController = {
             })
 
     },
-    addNewUserAPI : function( request, response ){
-        let userName = request.params.userName;
-        let newUser = {
-            userName : userName
-        }
-            UserModel
-                .createUser( newUser )
-                .then( user => {
-                    console.log("Hello")
-                    response.status( 201 ).json( user );
-                });    
-    },
-    updateUser : function( request, response ){
-        let { firstName, lastName, password } = request.body;
-        let userName = request.params.userName;
+    updateTask : function( request, response ){
+        let { title, description, completed } = request.body;
+        let id = request.params.id;
 
         let fieldsToUpdate = {}
 
-        if( firstName ){
-            fieldsToUpdate.firstName = firstName;
+        if( title ){
+            fieldsToUpdate.title = title;
         }
 
-        if( lastName ){
-            fieldsToUpdate.lastName = lastName;
+        if( description ){
+            fieldsToUpdate.description = description;
         }
 
-        if( password ){
-            fieldsToUpdate.password = password;
+        if( completed ){
+            fieldsToUpdate.completed = completed;
         }
-        
         if( Object.keys( fieldsToUpdate ).length === 0 ){
-            response.statusMessage = "You need to provide at least one of the following fields to update the user ('userName', 'firstName', 'lastName', 'password')";
+            response.statusMessage = "You need to provide at least one of the following fields to update the task ('title', 'description', 'completed')";
             response.status( 406 ).end();
         }
         else{
-            UserModel
-                .getUserById( userName )
-                .then( user => {
-                    if( user === null ){
-                        throw new Error( "That user doesn't exist" );
+            // fieldsToUpdate.updated_at = Date.now;
+            TaskModel
+                .getOneById({ _id: id} )
+                .then( task => {
+                    if( task === null ){
+                        throw new Error( "That task id doesn't exist" );
                     }
                     else{
-                        UserModel
-                            .updateUser( userName, fieldsToUpdate )
+                        TaskModel
+                            .updateOne( id, fieldsToUpdate )
                             .then( result => {
                                 response.status( 202 ).json( result );
                             });
