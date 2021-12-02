@@ -1,4 +1,4 @@
-const { BicycleModel } = require('../models/BicycleModel');
+const { BicycleModel, Bicycle } = require('../models/BicycleModel');
 const { UserModel } = require('../models/userModel')
 const bcrypt = require('bcrypt');
 
@@ -111,17 +111,17 @@ const APIController = {
     },
     deleteBicycle: function (request, response) {
         const id = request.params.id;
-        console.log(id, "Id of bike to delete");
-        UserModel.findOneBicycle(id).then((data) => {
-            console.log({data});
-            response.status(200).end();
-            // BicycleModel
-            // .deleteOne(id)
-            // .then(result => {
-            //     console.log("I deleted bike", result)
-            //     response.status(204).end();
-            // });
-        })
+        const userEmail = request.body.userEmail;
+        
+        UserModel.getOneByEmail(userEmail).then((user) => {
+            const bike = new Bicycle({id})
+            const removeBicycle = user.bicycles.filter(bike => bike._id !== bike._id);
+            user.bicycles = removeBicycle;
+
+            UserModel.updateOne(user._id, user).then((UpdatedUser) => {
+                response.status(200).json(UpdatedUser);
+            });
+        });
     },
 
     updateOne: function (request, response) {

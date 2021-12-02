@@ -52,7 +52,7 @@ export class HomeComponent implements OnInit {
     
   }
   deleteBike(bikeId: string) : void {
-    let observable = this._HttpService.DeleteBike(bikeId)
+    let observable = this._HttpService.DeleteBike(bikeId, this.currentUser.email)
     observable.subscribe((data:any) => {
       console.log(data, "bike has been erased");
       this.getAllUsers();

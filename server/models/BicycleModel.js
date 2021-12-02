@@ -38,16 +38,17 @@ const BicycleModel = {
         return Bicycle.create( newBicycle );
     },
     deleteOne: function(id){
-        console.log("deleteOne =>", id);
         return Bicycle.deleteOne( {_id : id} );
     },
     findOneBicycle: (id) => {
-        return Bicycle.findOne({ _id: id});
+        console.log("aja", id);
+        return Bicycle.findOne({_id: id});
     }
 }
 
 
 module.exports = {
     BicycleModel,
-    BicycleSchema
+    BicycleSchema,
+    Bicycle
 };

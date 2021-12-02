@@ -34,8 +34,12 @@ export class HttpService {
     return this._http.delete(`http://localhost:5000/api/${id}`)
   }
 
-  DeleteBike(id: string) {
-    return this._http.delete(`http://localhost:5000/api/bike/${id}`)
+  DeleteBike(id: string, currentUserEmail: string) {
+    return this._http.delete(`http://localhost:5000/api/bike/${id}`, {
+      body: {
+        userEmail: currentUserEmail
+      }
+    })
 
   }
   loginUser( currentUser: any ){
