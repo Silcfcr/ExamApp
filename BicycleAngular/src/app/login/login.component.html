@@ -1,0 +1,20 @@
+<form (submit)="loginHandler( $event )">
+    <div>
+        <label for="loginEmail">
+            Email:
+        </label>
+        <input type="text" name="loginEmail" id="loginEmail" [(ngModel)]="loginEmail"/>
+    </div>
+    <div>
+        <label for="loginPassword">
+            Password:
+        </label>
+        <input type="password" name="loginPassword" id="loginPassword" [(ngModel)]="loginPassword"/>
+    </div>
+    <button type="submit">
+        Login
+    </button>
+    <div>
+        {{errorMessage}}
+    </div>
+</form>

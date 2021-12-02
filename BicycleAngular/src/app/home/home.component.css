@@ -1,0 +1,11 @@
+.itemCard {
+    display: flex;
+    flex-direction: row;
+    align-items:flex-start;
+    justify-content: space-around;
+
+}
+.img {
+    height: 200px;
+    width: 200px;
+}

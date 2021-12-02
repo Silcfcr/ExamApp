@@ -1,0 +1,10 @@
+#commentSection {
+    overflow: scroll;
+    height: 400px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-around;
+
+}
