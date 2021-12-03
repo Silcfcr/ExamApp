@@ -239,12 +239,11 @@ const APIController = {
         console.log("userName in addNew", userName)
         if (title && options) {
             options.forEach(optionObj => {
-                for (let option in optionObj) {
-                    if (option.length < 3) {
+                console.log(optionObj.option.length);
+                    if (optionObj.option.length < 3) {
                         response.statusMessage = "Every option must be al least 3 characters long";
-                        response.status(406).end()
+                        response.status(406).end();
                     }
-                }
             });
             const newPost = {
                 title,

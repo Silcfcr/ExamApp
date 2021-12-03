@@ -27,7 +27,6 @@ export class ProfileComponent implements OnInit {
       console.log( error.statusText );
       this._router.navigate( ['/login'] );
     })
-    // this.getUser();
     
     this.newPost = {
       title : "",
@@ -40,7 +39,6 @@ export class ProfileComponent implements OnInit {
 
   addPost(event:any): void {
     event.preventDefault();
-
     const options = [
       { 
         option : this.newPost.option1,
@@ -65,13 +63,13 @@ export class ProfileComponent implements OnInit {
     console.log(this.currentUser.userName, "username being sent to server");
     let observable = this._HttpService.CreateOnePost(this.currentUser.userName, postToSend );
     observable.subscribe((data: any) => {
-      console.log(data, "data in client");
-    },
-    ( error: any ) => {
-      console.log( error );
-      this.errorMessage = error.statusText;
-    });
+    console.log("**** ", data, "data in client");
     this._router.navigate( ['/home'] );
+    }, (error: any) =>{
+      console.log( error.statusText );
+    });  
+    this._router.navigate( ['/home'] ); 
+    //not working, why??????
   }
 
   // getUser(): void {
