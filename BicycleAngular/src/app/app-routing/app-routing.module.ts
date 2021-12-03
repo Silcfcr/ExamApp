@@ -6,6 +6,7 @@ import { LoginComponent } from '../login/login.component';
 import { PageNotFoundComponent } from '../page-not-found/page-not-found.component';
 import { ProfileComponent } from '../profile/profile.component';
 import { UserRegisterComponent } from '../user-register/user-register.component';
+import { VoteComponent } from '../vote/vote.component';
 
 
 let routes: Routes = [
@@ -24,6 +25,10 @@ let routes: Routes = [
     {
         path: 'profile',
         component: ProfileComponent
+    },
+    {
+        path: 'vote/:postId',
+        component: VoteComponent
     },
     // {
     //     path: 'addUser',

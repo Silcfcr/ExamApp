@@ -3,28 +3,56 @@
         <div class="col-10-center">
             <form (submit)="loginHandler( $event )">
                 <div>
-                    <label for="loginEmail">
-                        Email:
+                    <label for="loginUserName">
+                        UserName:
                     </label>
-                    <input class="form-control"  type="text" name="loginEmail" id="loginEmail" [(ngModel)]="loginEmail"/>
+                    <input class="form-control" type="text" name="loginUserName" id="loginUserName" [(ngModel)]="loginUserName"/>
                 </div>
                 <div>
                     <label for="loginPassword">
                         Password:
                     </label>
-                    <input class="form-control"  type="password" name="loginPassword" id="loginPassword" [(ngModel)]="loginPassword"/>
+                    <input class="form-control" type="password" name="loginPassword" id="loginPassword" [(ngModel)]="loginPassword"/>
                 </div>
-                <button class="btn btn-dark mt-3" type="submit">
+                <button class= "btn btn-dark" type="submit">
                     Login
                 </button>
                 <div>
-                    <p> Don't have an account?</p>
-                    <button  class=" btn btn-dark" [routerLink]="['/register']">Register</button>
-                    
+                    {{errorMessage}}
                 </div>
+            </form>
+        </div>
+    </div>
+    <div class="row align-items-end">
+        <div class="col-10-center">
+            <form (submit)="registerHandler( $event )">
+                <div>
+                    <label for="firstName"> First Name:</label>
+                    <input class="form-control" type="text" name="firstName" id="firstName" [(ngModel)]="newUser.firstName">
+                </div>
+                <div>
+                    <label for="userName"> userName:</label>
+                    <input class="form-control" type="text" name="lastName" id="lastName" [(ngModel)]="newUser.userName">
+                </div> 
+                <div>
+                    <label for="password">
+                        Password:
+                    </label>
+                    <input class="form-control"  type="password" name="password" id="password" [(ngModel)]="newUser.password"/>
+                </div>
+                <div>
+                    <label for="confirmPassword">
+                        Confirm Password:
+                    </label>
+                    <input class="form-control"  type="password" name="confirmPassword" id="confirmPassword" [(ngModel)]="newUser.confirmPassword"/>
+                </div>
+                <button class= "btn btn-dark" type="submit">
+                    Login
+                </button>
                 <div>
                     {{errorMessage}}
                 </div>
+                <!-- {{newUser.firstName}} -->
             </form>
         </div>
     </div>

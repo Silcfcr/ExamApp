@@ -1,33 +1,39 @@
-<form (submit)="addBike( $event )">
-    <div>
-        <label for="title"> Title:</label>
-        <input type="text" name="title" id="title" [(ngModel)]="newBike.title">
+<div class="container">
+    <div class="row align-items-end">
+        <div class="col-10-center">
+            <button class="btn btn-dark" [routerLink]="['/home']">Back to polls</button>
+        </div>
     </div>
-    <div>
-        <label for="description"> Description:</label>
-        <input type="text" name="description" id="description" [(ngModel)]="newBike.description">
+    <div class="row align-items-end">
+        <div class="col-10-center">
+            <form (submit)="addPost( $event )">
+                <div>
+                    <label for="title"> Title:</label>
+                    <input class="form-control" type="text" name="title" id="title" [(ngModel)]="newPost.title">
+                </div>
+                <div>
+                    <label for="option1"> Option:</label>
+                    <input class="form-control" type="text" name="option1" id="option1" [(ngModel)]="newPost.option1">
+                </div>
+                <div>
+                    <label for="option2"> Option:</label>
+                    <input class="form-control" type="text" name="option2" id="option2" [(ngModel)]="newPost.option2">
+                </div>
+                <div>
+                    <label for="option3"> Option:</label>
+                    <input class="form-control" type="text" name="option3" id="option3" [(ngModel)]="newPost.option3">
+                </div>
+                <div>
+                    <label for="option4"> Option:</label>
+                    <input class="form-control" type="text" name="option4" id="option4" [(ngModel)]="newPost.option4">
+                </div>
+                <button class="btn btn-dark" type="submit">
+                    Create Poll
+                </button>
+                <div>
+                    {{errorMessage}}
+                </div>
+            </form>
+        </div>
     </div>
-    <div>
-        <label for="price">
-            Price:
-        </label>
-        <input type="number" name="price" id="price" [(ngModel)]="newBike.price"/>
-    </div>
-    <div>
-        <label for="location">
-            Location:
-        </label>
-        <input type="text" name="location" id="location" [(ngModel)]="newBike.location"/>
-    </div>
-    <div>
-        <label for="imageUrl"> Load an image:</label>
-        <input type="text" name="imageUrl" id="imageUrl" [(ngModel)]="newBike.imageUrl">
-    </div>
-    <button class="btn" type="submit">
-        Create
-    </button>
-    <div>
-        {{errorMessage}}
-    </div>
-</form>
-
+</div>    

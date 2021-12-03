@@ -14,7 +14,7 @@ APIRouter
 APIRouter
     .put( '/:id', APIController.updateOne );
 APIRouter
-    .post( '/:email', APIController.addNewBicycle );
+    .post( '/:email', APIController.addNewPost );
 APIRouter
     .post('/user/login', APIController.userLogin );
 
@@ -22,13 +22,16 @@ APIRouter
     .get( '/user/logout', APIController.userLogout );
 
 APIRouter
-    .get( '/:id/email', APIController.getOneByEmail );
+    .get( '/:id/username', APIController.getOneByUserName );
 APIRouter
     .get( '/user/validate', APIController.validateUser );
 
 APIRouter
-    .delete( '/bike/:id', APIController.deleteBicycle );
+    .delete( '/delete/:id', APIController.deletePost );
+APIRouter
+    .get( '/post/:id', APIController.getOnePost );
 
+APIRouter.put('/vote/:id', APIController.updateVotes);
     
 
     module.exports = { APIRouter };

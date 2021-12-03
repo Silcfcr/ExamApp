@@ -21,9 +21,12 @@ export class HttpService {
       return this._http.post('http://localhost:5000/api/', newUser)
   }
 
-  CreateOneBike(email: string,newBike: any ) {
-    console.log("service", newBike)
-    return this._http.post(`http://localhost:5000/api/${email}`, newBike)
+  CreateOnePost(userName: string,newPost: any ) {
+    console.log("service", newPost)
+    return this._http.post(`http://localhost:5000/api/${userName}`, newPost)
+}
+getOnePost(id: string){
+  return this._http.get(`http://localhost:5000/api/post/${id}`);
 }
 
   UpdateOne( id: string, updateTask: any) {
@@ -34,14 +37,19 @@ export class HttpService {
     return this._http.delete(`http://localhost:5000/api/${id}`)
   }
 
-  DeleteBike(id: string, currentUserEmail: string) {
-    return this._http.delete(`http://localhost:5000/api/bike/${id}`, {
+  DeletePost(id: string, currentUserName: string) {
+    console.log(id, currentUserName, "in the http service")
+    return this._http.delete(`http://localhost:5000/api/delete/${id}`, {
       body: {
-        userEmail: currentUserEmail
+        userName: currentUserName
       }
-    })
-
+    });
   }
+
+  updateVotesInPost(post: any) {
+    return this._http.put(`http://localhost:5000/api/vote/${post._id}`, post);
+  }
+
   loginUser( currentUser: any ){
     console.log( currentUser );
     return  this._http.post( "http://localhost:5000/api/user/login", currentUser );

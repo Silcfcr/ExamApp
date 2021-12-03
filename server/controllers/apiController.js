@@ -1,19 +1,17 @@
-const { BicycleModel, Bicycle } = require('../models/BicycleModel');
 const { UserModel } = require('../models/userModel')
 const bcrypt = require('bcrypt');
+const { PostModel, Post } = require('../models/PostModel');
 
 const APIController = {
     getAll: function (request, response) {
         UserModel.getAll()
             .then(users => {
                 let userWithoutPassword = users.map(user => {
-
                     return {
                         id: user._id,
                         firstName: user.firstName,
-                        lastName: user.lastName,
-                        email: user.email,
-                        bicycles: user.bicycles
+                        userName: user.userName,
+                        posts: user.posts
                     }
                 })
                 response.status(200).json(userWithoutPassword);
@@ -26,39 +24,43 @@ const APIController = {
                 let userWithoutPassword = {
                     id: user._id,
                     firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email,
-                    bicycles: user.bicycles
+                    userName: user.userName,
+                    posts: user.posts
                 }
                 response.status(200).json(userWithoutPassword);
             });
     },
-    getOneByEmail: function (request, response) {
+    getOnePost: function (request, response) {
         let id = request.params.id;
-        UserModel.getOneByEmail(id)
+        PostModel.getOneById(id)
+            .then(post => {
+                response.status(200).json(post);
+            });
+    },
+    getOneByUserName: function (request, response) {
+        let id = request.params.id;
+        UserModel.getOneByUserName(id)
             .then(user => {
                 let userWithoutPassword = {
                     id: user._id,
                     firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email,
-                    bicycles: user.bicycles
+                    userName: user.userName,
+                    posts: user.posts
                 }
                 response.status(200).json(userWithoutPassword);
             });
     },
     addNew: function (request, response) {
         console.log(request.body, "In in the server side");
-        let { firstName, lastName, email, password, confirmPassword } = request.body;
+        let { firstName, userName, password, confirmPassword } = request.body;
 
-        if (firstName && lastName && email && password && confirmPassword) {
+        if (firstName && userName && password && confirmPassword) {
             if (password === confirmPassword) {
                 bcrypt.hash(password, 10)
                     .then(encryptedPassword => {
                         const newUser = {
-                            email,
                             firstName,
-                            lastName,
+                            userName,
                             password: encryptedPassword
                         };
                         UserModel
@@ -66,9 +68,8 @@ const APIController = {
                             .then(user => {
                                 request.session._id = user.id;
                                 request.session.firstName = user.firstName;
-                                request.session.lastName = user.lastName;
-                                request.session.email = user.email;
-                                request.session.bicycles = user.bicycles;
+                                request.session.userName = user.userName;
+                                request.session.posts = user.posts;
                                 console.log(request.session);
                                 response.status(201).json(user);
                             })
@@ -79,7 +80,7 @@ const APIController = {
             }
         }
         else {
-            response.statusMessage = "You are missing a field to create a new user ('userName', 'firstName', 'lastName', 'password')";
+            response.statusMessage = "You are missing a field to create a new user ('userName', 'firstName', 'password')";
             response.status(406).end();
         }
     },
@@ -109,15 +110,15 @@ const APIController = {
                 response.status(404).end();
             })
     },
-    deleteBicycle: function (request, response) {
-        const id = request.params.id;
-        const userEmail = request.body.userEmail;
-        
-        UserModel.getOneByEmail(userEmail).then((user) => {
-            const bike = new Bicycle({id})
-            const removeBicycle = user.bicycles.filter(bike => bike._id !== bike._id);
-            user.bicycles = removeBicycle;
+    deletePost: function (request, response) {
+        const id = request.params.id
+        const userName = request.body.userName;
+        console.log(id, "Postid", userName, "username")
 
+        UserModel.getOneByUserName(userName).then((user) => {
+            const removePost = user.posts.filter(post => post._id.toString() !== id);
+            console.log("remove items", { inconmingId: id, removePost });
+            user.posts = removePost;
             UserModel.updateOne(user._id, user).then((UpdatedUser) => {
                 response.status(200).json(UpdatedUser);
             });
@@ -126,7 +127,7 @@ const APIController = {
 
     updateOne: function (request, response) {
         console.log(request.body);
-        let { firstName, lastName, password } = request.body;
+        let { firstName, userName, password } = request.body;
         let id = request.params.id;
 
         let fieldsToUpdate = {}
@@ -136,7 +137,7 @@ const APIController = {
         }
 
         if (lastName) {
-            fieldsToUpdate.lastName = lastName;
+            fieldsToUpdate.userName = userName;
         }
 
         if (password) {
@@ -173,11 +174,11 @@ const APIController = {
         }
     },
     userLogin: function (request, response) {
-        let email = request.body.loginEmail;
+        let email = request.body.loginUserName;
         let password = request.body.loginPassword;
         console.log("Im here")
         UserModel
-            .getOneByEmail(email)
+            .getOneByUserName(email)
             .then(result => {
                 if (result === null) {
                     throw new Error("That user doesn't exist!");
@@ -189,16 +190,14 @@ const APIController = {
                         }
                         request.session.id = result._id;
                         request.session.firstName = result.firstName;
-                        request.session.lastName = result.lastName;
-                        request.session.email = result.email;
-                        request.session.bicycles = result.bicycles;
+                        request.session.userName = result.userName;
+                        request.session.posts = result.posts;
 
                         let currentUser = {
                             id: result.id,
                             firstName: result.firstName,
-                            lastName: result.lastName,
-                            email: result.email,
-                            bicycles: result.bicycles
+                            userName: result.userName,
+                            posts: result.posts
                         }
                         response.status(200).json(currentUser);
                     })
@@ -213,16 +212,13 @@ const APIController = {
             });
     },
     validateUser: function (request, response) {
-        if (request.session.id &&
-            request.session.email &&
-            request.session.firstName &&
-            request.session.lastName && request.session.bicycles) {
+        if (request.session.userName &&
+            request.session.firstName) {
             let currentUser = {
                 id: request.session.id,
-                email: request.session.email,
-                lastName: request.session.lastName,
+                userName: request.session.firstName,
                 firstName: request.session.firstName,
-                bicycles: request.session.bicyles
+                posts: request.session.posts
             }
             response.status(200).json(currentUser);
         }
@@ -236,45 +232,57 @@ const APIController = {
         request.session.destroy();
         response.status(200).json({ message: "Successfuly destroyed session" });
     },
-    addNewBicycle: function (request, response) {
-        let { title, description, price, location, imageUrl } = request.body;
+    addNewPost: function (request, response) {
+        let { title, options } = request.body;
         console.log("Here in addnewBicycle", request.body);
-        let email = request.params.email;
-        console.log("email in addNew", email)
-        if (title && description && price && location && imageUrl) {
-            const newBicycle = {
+        let userName = request.session.userName;
+        console.log("userName in addNew", userName)
+        if (title && options) {
+            options.forEach(optionObj => {
+                for (let option in optionObj) {
+                    if (option.length < 3) {
+                        response.statusMessage = "Every option must be al least 3 characters long";
+                        response.status(406).end()
+                    }
+                }
+            });
+            const newPost = {
                 title,
-                description,
-                price,
-                location,
-                imageUrl
+                options,
             };
-            console.log(newBicycle);
+            console.log(newPost);
 
-            BicycleModel
-                .createBicycle(newBicycle)
-                .then(data => {
+            UserModel
+                .getOneHopeWorks({ userName: userName })
+                .then(userResult => {
+                    console.log("This is user result", userResult)
                     UserModel
-                        .AddBicycleToUser(email, newBicycle)
-                        .then(data => {
-                            if (data === null) {
-                                console.log("Hihi")
-                                throw new Error("Error adding bike to user");
-                            }
-                            else {
-                                console.log(data);
-                                response.status(201).json(data);
-                            }
+                        .AddPostToUser(userResult._id, newPost)
+                        .then(result => {
+                            console.log("this is the final result", result)
                         });
-                    response.status(201).json(data);
                 });
-
         }
         else {
-            response.statusMessage = "You are missing a field to create a new bike";
+            response.statusMessage = "You are missing a field to create a new post";
             response.status(406).end();
         }
+    },
+    updateVotes: function(request, response) {
+        const postToUpdate = request.body;
+        console.log("postToUpdate", postToUpdate);
+        response.status(200).end();
+
+        PostModel
+        .updatePost(postToUpdate._id, postToUpdate)
+        .then(result => {
+            response.status(202).json(result);
+        }).catch(error => {
+            response.statusMessage = error.message;
+            response.status(404).end();
+        });
     }
+
 }
 
 module.exports = { APIController };

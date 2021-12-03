@@ -12,6 +12,7 @@ import { AddBicyclesComponent } from './add-bicycles/add-bicycles.component';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { UserRegisterComponent } from './user-register/user-register.component';
 import { ProfileComponent } from './profile/profile.component';
+import { VoteComponent } from './vote/vote.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { ProfileComponent } from './profile/profile.component';
     AddBicyclesComponent,
     UserRegisterComponent,
     ProfileComponent,
+    VoteComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,40 +1,44 @@
 <div class="container">
+    <h1>Current Polls:</h1>
+    <input id="search" placeholder="search" type="search" name="" id="">
     <div class="row justify-content-around">
         <div class="col-10-center">
-            <button class="btn btn-dark" [routerLink]="['/home']">Browse</button>
-            <button class="btn btn-dark"[routerLink]="['/profile']">My listings</button>
-            <button class="btn btn-dark" [routerLink]="['/api/user/logout']">Log Out</button>
+            <button class="btn btn-dark" [routerLink]="['/profile']">Create Poll</button>
+            <button class="btn btn-dark" (click)="logout()">Logout</button>
         </div>
-    <div class="row">
-        <div class="col-10-center">
-            <router-outlet></router-outlet> 
-            <div *ngIf="contactUser != null">
+        <div class="row">
+            <div class="col-10-center">
+                <router-outlet></router-outlet>
+                <!-- <div *ngIf="contactUser != null">
                 <h3> This is the contacts Info:</h3>
                 <p> Name: {{contactUser.firstName}} {{contactUser.lastName}} </p>
                 <p>Email: {{contactUser.email}} </p> 
-            </div>
-            <div *ngFor="let user of allUsers">
-                <!-- {{user.firstName}} {{user.lastName}} {{user.email}} -->
-                <div *ngFor="let bike of user.bicycles" class="itemCard">
-                    <div>
-                        <img class="img" src="{{bike.imageUrl}}">
-                    </div>
-                    <div>
-                        {{bike.title}} {{bike.description}}
-                    </div>
-                    <div>
-                        {{bike.price}} 
-                        {{bike.location}}
-                        <div *ngIf="user.email === currentUser.email">
-                            <button (click)="deleteBike(bike._id)" >Delete!</button>  
-                        </div>
-                        <div *ngIf="user.email != currentUser.email">
-                            <button (click)="contactInfo(user.email)" >Contact!</button>
-                        </div>
-                    </div>
-                </div>
+            </div> -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Survey Question</th>
+                            <th scope="col">Date Posted</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let user of allUsers">
+                        <tr *ngFor="let post of user.posts">
+                            <td>{{user.firstName}}</td>
+                            <td>{{post.title}}</td>
+                            <td>{{post.createdAt | date: 'dd-MM-yyyy' }}</td>
+                            <td>
+                                <div *ngIf="user.userName === currentUser.userName">
+                                    <button (click)="deletePost(post._id)">Delete!</button>
+                                </div>
+                                <div *ngIf="user.userName != currentUser.userName">
+                                    <button class="btn btn-dark" [routerLink]="['/vote', post._id]">Vote</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</div>    
-

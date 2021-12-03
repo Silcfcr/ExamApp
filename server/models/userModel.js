@@ -1,19 +1,12 @@
 const mongoose = require( 'mongoose' );
-const {BicycleSchema, BicycleModel} = require( './BicycleModel' );
+const {PostSchema, PostModel} = require( './PostModel' );
 const UserSchema = new mongoose.Schema({
     firstName : {
         type : String,
         required : true,
         minlength : 3,
         maxlength : 20
-    },
-    lastName : {
-        type : String,
-        required : true,
-        minlength : 3,
-        maxlength : 20
-    },
-    email : {
+    },userName : {
         type : String,
         required : true,
         unique : true
@@ -22,7 +15,7 @@ const UserSchema = new mongoose.Schema({
         type : String,
         required : true
     },
-    bicycles : [ BicycleSchema ]
+    posts : [ PostSchema ]
 });
 
 const User = mongoose.model( 'users', UserSchema );
@@ -37,17 +30,20 @@ const UserModel = {
     getOneById : function( id ){
         return User.findOne({_id: id});
     },
-    getOneByEmail : function( email ){
+    getOneHopeWorks : function( userName ){
         console.log("Getting here");
-        return User.findOne({email});
+        return User.findOne(userName);
     },
-    AddBicycleToUser : function( userId, newBicycle ){
-        console.log(userId, "userid");
-        console.log("i AM IN FACT GETTING HERE")
-        return BicycleModel.createBicycle( newBicycle)
+
+    getOneByUserName : function( {userName} ){
+        console.log("Getting here");
+        return User.findOne(userName);
+    },
+    AddPostToUser : function( userId, newPost ){
+        console.log( "I enter here", userId, newPost);
+        return PostModel.createPost( newPost)
             .then( result => {
-                console.log("I'm inside result");
-                return User.findOneAndUpdate({email: userId}, {$push: {bicycles: result}});
+                return User.findOneAndUpdate({_id: userId}, {$push: {posts: result}});
             });
     },
     deleteOne : function( id ){
@@ -55,7 +51,7 @@ const UserModel = {
     },
     updateOne : function( id, userToUpdate ){
         return User.findOneAndUpdate( {_id : id}, {$set : userToUpdate }, {new : true} )
-    },
+    }
 };
 
 module.exports = {UserModel};

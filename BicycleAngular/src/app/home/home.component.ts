@@ -12,18 +12,20 @@ export class HomeComponent implements OnInit {
   allUsers : any;
   currentUser : any;
   contactUser : any;
+  selectedPost : any;
   
   constructor(private _HttpService: HttpService,
               private _router: Router,
               private _route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.getAllUsers()
     this.contactUser = null;
     let observable = this._HttpService.validateUser();
     observable.subscribe((data:any) => {
       console.log(data);
       this.currentUser = data;
-      this.getAllUsers()
+      
     },
     (error:any) => {
       this._router.navigate(['/login']);
@@ -33,7 +35,7 @@ export class HomeComponent implements OnInit {
   }
 
   getAllUsers(): void {
-    console.log( "Getting al bikes and users" );
+    console.log( "Getting alL users and posts" );
     let observable = this._HttpService.getAll();;
     observable.subscribe((data: any) => {
       console.log(data);
@@ -42,19 +44,11 @@ export class HomeComponent implements OnInit {
     console.log("i got here")
 
   }
-  contactInfo(userEmail: string) : void {
-    console.log(userEmail);
-    let observable = this._HttpService.getOneByEmail(userEmail)
+  deletePost(postId: string) : void {
+    console.log(postId, this.currentUser.userName, "in the home component")
+    let observable = this._HttpService.DeletePost(postId, this.currentUser.userName)
     observable.subscribe((data:any) => {
-      console.log(data);
-      this.contactUser = data;
-    })
-    
-  }
-  deleteBike(bikeId: string) : void {
-    let observable = this._HttpService.DeleteBike(bikeId, this.currentUser.email)
-    observable.subscribe((data:any) => {
-      console.log(data, "bike has been erased");
+      console.log(data, "post has been erased");
       this.getAllUsers();
     })
   }

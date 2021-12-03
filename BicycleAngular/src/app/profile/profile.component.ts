@@ -9,7 +9,7 @@ import { HttpService } from '../http.service';
 })
 export class ProfileComponent implements OnInit {
   currentUser : any;
-  newBike : any;
+  newPost: any;
   errorMessage : string = "";
 
   constructor(private _HttpService: HttpService,
@@ -21,7 +21,7 @@ export class ProfileComponent implements OnInit {
     observable.subscribe( (data: any) => {
       console.log( "This is session data ", data );
       this.currentUser = data;
-      console.log(this.currentUser.email)
+      console.log(this.currentUser.userName)
     },
     (error: any) =>{
       console.log( error.statusText );
@@ -29,27 +29,49 @@ export class ProfileComponent implements OnInit {
     })
     // this.getUser();
     
-    this.newBike = {
+    this.newPost = {
       title : "",
-      description : "",
-      price : "",
-      location : "",
-      imageUrl : ""
+      option1 : "",
+      option2 : "",
+      option3 : "",
+      option4 : "",
     }
   }
 
-  addBike(event:any): void {
+  addPost(event:any): void {
     event.preventDefault();
-    console.log(this.newBike)
-    let observable = this._HttpService.CreateOneBike(this.currentUser.email, this.newBike, );
+
+    const options = [
+      { 
+        option : this.newPost.option1,
+        count : 0
+      },
+      { 
+        option : this.newPost.option2,
+        count : 0
+      },{ 
+        option : this.newPost.option3,
+        count : 0
+      },{ 
+        option : this.newPost.option4,
+        count : 0
+      }
+    ] 
+    let postToSend = {
+      title : this.newPost.title,
+      options : options
+    }
+    console.log(postToSend, "This is post to send");
+    console.log(this.currentUser.userName, "username being sent to server");
+    let observable = this._HttpService.CreateOnePost(this.currentUser.userName, postToSend );
     observable.subscribe((data: any) => {
-      console.log(data);
-      this._router.navigate( ['/home'] );
+      console.log(data, "data in client");
     },
     ( error: any ) => {
       console.log( error );
       this.errorMessage = error.statusText;
     });
+    this._router.navigate( ['/home'] );
   }
 
   // getUser(): void {

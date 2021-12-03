@@ -8,8 +8,9 @@ import { HttpService } from '../http.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  newUser: any;
+  loginUserName: string = "";
   loginPassword: string = "";
-  loginEmail: string = "";
   errorMessage: string = "";
 
   constructor( private _HttpService : HttpService,
@@ -18,6 +19,24 @@ export class LoginComponent implements OnInit {
                 ) { }
 
   ngOnInit(): void {
+    this.newUser = {
+      firstName : "",
+      userName : "",
+      password : ""
+    }
+  }
+  registerHandler( event: any ): void{
+    event.preventDefault();
+    console.log("registering");
+
+    let observable = this._HttpService.CreateOne( this.newUser );
+    observable.subscribe( (data: any ) => {
+      this._router.navigate( ['/home'] );
+    },
+    ( error: any ) => {
+      console.log( error );
+      this.errorMessage = error.statusText;
+    });
   }
 
   loginHandler( event: any ): void{
@@ -26,14 +45,16 @@ export class LoginComponent implements OnInit {
 
     let currentUser = {
       loginPassword : this.loginPassword,
-      loginEmail : this.loginEmail
+      loginUserName : this.loginUserName
     }
     let observable = this._HttpService.loginUser( currentUser );
     observable.subscribe( (data: any ) => {
+      console.log("I'm the data in observable", data)
       this._router.navigate( ['/home'] );
     },
     ( error: any ) => {
       console.log( error );
+      console.log( error, "I'm the error" );
       this.errorMessage = error.statusText;
     });
   }
